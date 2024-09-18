@@ -5,6 +5,9 @@ import type { SetterOrUpdater } from 'recoil';
 import useGetSender from '~/hooks/Conversations/useGetSender';
 import { EndpointIcon } from '~/components/Endpoints';
 import { getPresetTitle } from '~/utils';
+import { Eye } from 'lucide-react';
+import { EyeOff } from 'lucide-react';
+import { useChatContext } from '~/Providers';
 
 export default function AddedConvo({
   addedConvo,
@@ -13,6 +16,7 @@ export default function AddedConvo({
   addedConvo: TConversation | null;
   setAddedConvo: SetterOrUpdater<TConversation | null>;
 }) {
+  const { isBlindMode, setBlindMode } = useChatContext();
   const getSender = useGetSender();
   const { data: endpointsConfig } = useGetEndpointsQuery();
   const title = useMemo(() => {
@@ -40,6 +44,14 @@ export default function AddedConvo({
       <span className="text-token-text-secondary line-clamp-3 flex-1 py-0.5 font-semibold">
         {title}
       </span>
+      <button
+        className="text-token-text-secondary flex-shrink-0"
+        type="button"
+        aria-label="Open eye"
+        onClick={() => setBlindMode(!isBlindMode)}
+      >
+      {isBlindMode ? <EyeOff size={24}/> : <Eye size={24}/>}
+      </button>
       <button
         className="text-token-text-secondary flex-shrink-0"
         type="button"

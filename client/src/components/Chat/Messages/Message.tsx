@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMessageProcess } from '~/hooks';
 import type { TMessageProps } from '~/common';
 import MessageRender from './ui/MessageRender';
@@ -26,6 +26,14 @@ const MessageContainer = React.memo(
 );
 
 export default function Message(props: TMessageProps) {
+  // Randomized positions for MessageRender instances
+  const [renderOrder, setRenderOrder] = useState<number[]>([0, 1]);
+
+  useEffect(() => {
+    // Randomize the order on first mount
+    setRenderOrder(Math.random() > 0.5 ? [0, 1] : [1, 0]);
+  }, []);
+
   const {
     showSibling,
     conversation,
@@ -42,25 +50,32 @@ export default function Message(props: TMessageProps) {
 
   const { children, messageId = null } = message;
 
+  const renderMessages = [
+    {
+      message: message,
+      isMultiMessage: false,
+    },
+    {
+      message: siblingMessage ?? latestMultiMessage ?? undefined,
+      isMultiMessage: true,
+    }
+  ];
+
   return (
     <>
       <MessageContainer handleScroll={handleScroll}>
         {showSibling ? (
           <div className="m-auto my-2 flex justify-center p-4 py-2 md:gap-6">
             <div className="flex w-full flex-row flex-wrap justify-between gap-1 md:max-w-5xl md:flex-nowrap md:gap-2 lg:max-w-5xl xl:max-w-6xl">
-              <MessageRender
-                {...props}
-                message={message}
-                isSubmittingFamily={isSubmittingFamily}
-                isCard
-              />
-              <MessageRender
-                {...props}
-                isMultiMessage
-                isCard
-                message={siblingMessage ?? latestMultiMessage ?? undefined}
-                isSubmittingFamily={isSubmittingFamily}
-              />
+              {renderOrder.map((index) => (
+                  <MessageRender
+                    key={index}
+                    {...props}
+                    {...renderMessages[index]}
+                    isCard
+                    isSubmittingFamily={isSubmittingFamily}
+                  />
+                ))}
             </div>
           </div>
         ) : (
