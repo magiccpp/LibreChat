@@ -173,7 +173,7 @@ const useNewConvo = (index = 0) => {
       modelsData,
       buildDefault = true,
       keepLatestMessage = false,
-      keepAddedConvos = false,
+      keepAddedConvos = true,
     }: {
       template?: Partial<TConversation>;
       preset?: Partial<TPreset>;

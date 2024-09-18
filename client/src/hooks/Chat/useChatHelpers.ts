@@ -8,12 +8,16 @@ import useChatFunctions from '~/hooks/Chat/useChatFunctions';
 import { useAuthContext } from '~/hooks/AuthContext';
 import useNewConvo from '~/hooks/useNewConvo';
 import store from '~/store';
+import { atomWithLocalStorage } from '~/store/utils'; // Assuming this is the location of the helper function
+
 
 // this to be set somewhere else
 export default function useChatHelpers(index = 0, paramId?: string) {
   const clearAllSubmissions = store.useClearSubmissionState();
   const [files, setFiles] = useRecoilState(store.filesByIndex(index));
   const [filesLoading, setFilesLoading] = useState(false);
+  const blindModeAtom = atomWithLocalStorage<boolean>('isBlindMode', false);
+  const [isBlindMode, setBlindMode] = useRecoilState(blindModeAtom);
 
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuthContext();
@@ -178,5 +182,7 @@ export default function useChatHelpers(index = 0, paramId?: string) {
     setFiles,
     filesLoading,
     setFilesLoading,
+    isBlindMode,
+    setBlindMode,
   };
 }

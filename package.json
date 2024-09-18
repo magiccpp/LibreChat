@@ -107,5 +107,8 @@
       "admin/",
       "packages/"
     ]
+  },
+  "dependencies": {
+    "@mui/material": "^6.1.0"
   }
 }

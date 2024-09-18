@@ -12,6 +12,7 @@ import SubRow from '~/components/Chat/Messages/SubRow';
 import { useMessageActions } from '~/hooks';
 import { cn, logger } from '~/utils';
 import store from '~/store';
+import { useAddedChatContext, useChatContext } from '~/Providers';
 
 type MessageRenderProps = {
   message?: TMessage;
@@ -56,6 +57,12 @@ const MessageRender = memo(
       setCurrentEditId,
     });
 
+
+    const {
+      conversation: addedConvo,
+    } = useAddedChatContext();
+
+    const { isBlindMode } = useChatContext();
     const fontSize = useRecoilValue(store.fontSize);
     const handleRegenerateMessage = useCallback(() => regenerateMessage(), [regenerateMessage]);
     const { isCreatedByUser, error, unfinished } = msg ?? {};
@@ -80,6 +87,8 @@ const MessageRender = memo(
         }
         : undefined;
 
+    // Determine if the text should be blurred
+    const shouldBlurText = messageLabel === msg?.sender && isBlindMode && addedConvo !== null;
     return (
       <div
         aria-label={`message-${msg.depth}-${msg.messageId}`}
@@ -107,7 +116,11 @@ const MessageRender = memo(
         <div className="relative flex flex-shrink-0 flex-col items-end">
           <div>
             <div className="pt-0.5">
-              <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
+              <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full"
+                  style={{
+                    filter: shouldBlurText ? 'blur(5px) grayscale(100%) brightness(50%)' : 'none',
+                  }}
+                >
                 <Icon message={msg} conversation={conversation} assistant={assistant} />
               </div>
             </div>
@@ -118,8 +131,13 @@ const MessageRender = memo(
             'relative flex w-11/12 flex-col',
             msg.isCreatedByUser === true ? '' : 'agent-turn',
           )}
+
         >
-          <h2 className={cn('select-none font-semibold', fontSize)}>{messageLabel}</h2>
+          <h2 className={cn('select-none font-semibold', fontSize, 'blurred-text')}
+            style={{
+                        filter: shouldBlurText ? 'blur(5px)' : 'none',
+                        userSelect: 'none',
+              }} >{messageLabel}</h2>
           <div className="flex-col gap-1 md:gap-3">
             <div className="flex max-w-full flex-grow flex-col gap-0">
               {msg.plugin && <Plugin plugin={msg.plugin} />}
