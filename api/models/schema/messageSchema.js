@@ -116,6 +116,12 @@ const messageSchema = mongoose.Schema(
       type: String,
     },
     attachments: { type: [{ type: mongoose.Schema.Types.Mixed }], default: undefined },
+    rating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5
+    }
     /*
     attachments: {
       type: [
@@ -139,7 +145,9 @@ const messageSchema = mongoose.Schema(
     },
     */
   },
+  
   { timestamps: true },
+
 );
 
 if (process.env.MEILI_HOST && process.env.MEILI_MASTER_KEY) {
