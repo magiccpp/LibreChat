@@ -149,7 +149,7 @@ export default function HoverButtons({
           <ContinueIcon className="h-4 w-4 hover:text-gray-500 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400" />
         </button>
       ) : null}
-      <button
+      {!message.isCreatedByUser ? (<button
         className={cn(
           'hover-button rounded-md p-1 hover:bg-gray-100 hover:text-gray-500 focus:opacity-100 dark:text-gray-400/70 dark:hover:bg-gray-700 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400 md:group-hover:visible md:group-[.final-completion]:visible',
         )}
@@ -159,7 +159,8 @@ export default function HoverButtons({
         disabled={hideEditButton}
       >
         <StarIcon size="19" />
-      </button>
+      </button>) : null
+    }
       
 
     </div>

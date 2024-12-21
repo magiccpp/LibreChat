@@ -473,6 +473,7 @@ export const tMessageSchema = z.object({
   thread_id: z.string().optional(),
   /* frontend components */
   iconURL: z.string().optional(),
+  rating: z.number().optional(),
 });
 
 export type TAttachmentMetadata = { messageId: string; toolCallId: string };
