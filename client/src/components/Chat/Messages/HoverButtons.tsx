@@ -44,6 +44,8 @@ export default function HoverButtons({
   const [isCopied, setIsCopied] = useState(false);
   const [TextToSpeech] = useRecoilState<boolean>(store.textToSpeech);
   const [isRatingVisible, setIsRatingVisible] = React.useState(false);
+  const [rating, setRating] = useState(message.rating);
+
   const conversationId = conversation?.conversationId;
   const messageId = message.messageId;
   const updateMessageRatingMutation = useUpdateMessageRatingMutation(conversationId ?? '');
@@ -78,12 +80,7 @@ export default function HoverButtons({
       rating: index,
       messageId,
     });
-    // updateMessageMutation.mutate({
-    //   conversationId: conversationId ?? '',
-    //   model: conversation?.model ?? 'gpt-3.5-turbo',
-    //   text: '111111',
-    //   messageId,
-    // });
+    setRating(index); // Update the state
   }
 
   const onEdit = () => {
@@ -178,7 +175,7 @@ export default function HoverButtons({
             onMouseLeave={() => setIsRatingVisible(false)}
           >
             {isRatingVisible ? (
-              <StarRating rating={message.rating} onRating={onRating}/>
+              <StarRating rating={rating} onRating={onRating}/>
             ) : (
               <button
                 className={cn(
