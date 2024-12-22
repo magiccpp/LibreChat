@@ -6,13 +6,13 @@ type IconProps = {
   size?: string;
 };
 
-const StarIcon = React.forwardRef<SVGSVGElement, IconProps>((props: IconProps, ref) => {
+const OutlineStarIcon = React.forwardRef<SVGSVGElement, IconProps>((props: IconProps, ref) => {
   const { className = 'icon-md', size = '1.2em' } = props;
   return (
     <svg
       ref={ref}
-      fill="currentColor" // Change here to fill the entire star
-      stroke="currentColor" // Still include stroke for outline if you need it
+      fill="none" // No fill to create an outline
+      stroke="currentColor" // Stroke to represent the outline
       strokeWidth="2"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
@@ -32,4 +32,4 @@ const StarIcon = React.forwardRef<SVGSVGElement, IconProps>((props: IconProps, r
 });
 
 
-export default StarIcon;
+export default OutlineStarIcon;

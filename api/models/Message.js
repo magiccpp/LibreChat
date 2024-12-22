@@ -162,6 +162,28 @@ async function updateMessageText(req, { messageId, text }) {
 }
 
 /**
+ * Updates the text of a message.
+ *
+ * @async
+ * @function updateMessageRating
+ * @param {Object} params - The update data object.
+ * @param {Object} req - The request object.
+ * @param {string} params.messageId - The unique identifier for the message.
+ * @param {string} params.rating - The new text content of the message.
+ * @returns {Promise<void>}
+ * @throws {Error} If there is an error in updating the message text.
+ */
+async function updateMessageRating(req, { messageId, rating }) {
+  try {
+    await Message.updateOne({ messageId, user: req.user.id }, { rating });
+  } catch (err) {
+    logger.error('Error updating message rating:', err);
+    throw err;
+  }
+}
+
+
+/**
  * Updates a message.
  *
  * @async
@@ -174,6 +196,7 @@ async function updateMessageText(req, { messageId, text }) {
  * @param {boolean} [message.isCreatedByUser] - Indicates if the message was created by the user.
  * @param {string} [message.sender] - The identifier of the sender.
  * @param {number} [message.tokenCount] - The number of tokens in the message.
+ * @param {number} [message.rating] - The rating of the message.
  * @param {Object} [metadata] - The operation metadata
  * @param {string} [metadata.context] - The operation metadata
  * @returns {Promise<TMessage>} The updated message document.
@@ -204,6 +227,7 @@ async function updateMessage(req, message, metadata) {
       isCreatedByUser: updatedMessage.isCreatedByUser,
       tokenCount: updatedMessage.tokenCount,
       isEdited: true,
+      rating: updatedMessage.rating,
     };
   } catch (err) {
     logger.error('Error updating message:', err);
@@ -309,6 +333,7 @@ module.exports = {
   bulkSaveMessages,
   recordMessage,
   updateMessageText,
+  updateMessageRating,
   updateMessage,
   deleteMessagesSince,
   getMessages,

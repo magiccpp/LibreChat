@@ -48,6 +48,7 @@ export default {
   com_ui_regenerate: 'Regenerasi',
   com_ui_continue: 'Lanjutkan',
   com_ui_edit: 'Edit',
+  com_ui_rating: 'Rating',
   com_ui_success: 'Berhasil',
   com_ui_all: 'semua',
   com_ui_clear: 'Bersihkan',

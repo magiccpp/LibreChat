@@ -127,6 +127,12 @@ export type TUpdateMessageRequest = {
   text: string;
 };
 
+export type TUpdateMessageRatingRequest = {
+  conversationId: string;
+  messageId: string;
+  rating: number;
+};
+
 export type TUpdateMessageContent = {
   conversationId: string;
   messageId: string;
