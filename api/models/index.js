@@ -23,6 +23,7 @@ const {
   saveMessage,
   recordMessage,
   updateMessage,
+  updateMessageRating,
   deleteMessagesSince,
   deleteMessages,
 } = require('./Message');
@@ -57,6 +58,7 @@ module.exports = {
   saveMessage,
   recordMessage,
   updateMessage,
+  updateMessageRating,
   deleteMessagesSince,
   deleteMessages,
 

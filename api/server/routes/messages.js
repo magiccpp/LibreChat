@@ -1,9 +1,10 @@
 const express = require('express');
 const { ContentTypes } = require('librechat-data-provider');
-const { saveConvo, saveMessage, getMessages, updateMessage, deleteMessages } = require('~/models');
+const { saveConvo, saveMessage, getMessages, updateMessage, updateMessageRating, deleteMessages } = require('~/models');
 const { requireJwtAuth, validateMessageReq } = require('~/server/middleware');
 const { countTokens } = require('~/server/utils');
 const { logger } = require('~/config');
+
 
 const router = express.Router();
 router.use(requireJwtAuth);
@@ -56,12 +57,17 @@ router.get('/:conversationId/:messageId', validateMessageReq, async (req, res) =
 router.put('/:conversationId/:messageId', validateMessageReq, async (req, res) => {
   try {
     const { conversationId, messageId } = req.params;
-    const { text, index, model } = req.body;
+    const { text, index, model, rating } = req.body;
 
     if (index === undefined) {
-      const tokenCount = await countTokens(text, model);
-      const result = await updateMessage(req, { messageId, text, tokenCount });
-      return res.status(200).json(result);
+      if (rating !== undefined) {
+        const result = await updateMessageRating(req, { messageId, rating });
+        return res.status(200).json(result);
+      } else {
+        const tokenCount = await countTokens(text, model);
+        const result = await updateMessage(req, { messageId, text, tokenCount });
+        return res.status(200).json(result);
+      }
     }
 
     if (typeof index !== 'number' || index < 0) {

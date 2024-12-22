@@ -124,6 +124,17 @@ export const useUpdateMessageMutation = (
   });
 };
 
+export const useUpdateMessageRatingMutation = (
+  id: string,
+): UseMutationResult<unknown, unknown, t.TUpdateMessageRatingRequest, unknown> => {
+  const queryClient = useQueryClient();
+  return useMutation((payload: t.TUpdateMessageRatingRequest) => dataService.updateMessageRating(payload), {
+    onSuccess: () => {
+      queryClient.invalidateQueries([QueryKeys.messages, id]);
+    },
+  });
+};
+
 export const useUpdateMessageContentMutation = (
   conversationId: string,
 ): UseMutationResult<unknown, unknown, t.TUpdateMessageContent, unknown> => {

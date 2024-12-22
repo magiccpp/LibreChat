@@ -205,6 +205,7 @@ class BaseClient {
   }
 
   createUserMessage({ messageId, parentMessageId, conversationId, text }) {
+    // read the environment variable for the default rating and convert to a number
     return {
       messageId,
       parentMessageId,
@@ -512,6 +513,7 @@ class BaseClient {
           isCreatedByUser: false,
           model: this.modelOptions?.model ?? this.model,
           sender: this.sender,
+          rating: Number(process.env.DEFAULT_RATING),
           text: generation,
         };
         this.currentMessages.push(userMessage, latestMessage);
@@ -583,6 +585,7 @@ class BaseClient {
       conversationId,
       parentMessageId: userMessage.messageId,
       isCreatedByUser: false,
+      rating: Number(process.env.DEFAULT_RATING),
       isEdited,
       model: this.getResponseModel(),
       sender: this.sender,

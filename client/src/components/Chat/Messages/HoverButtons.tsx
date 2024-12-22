@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import type { TConversation, TMessage } from 'librechat-data-provider';
-import { EditIcon, Clipboard, CheckMark, ContinueIcon, RegenerateIcon } from '~/components/svg';
+import { EditIcon, Clipboard, CheckMark, ContinueIcon, RegenerateIcon, StarOutlineIcon} from '~/components/svg';
 import { useGenerationsByLatest, useLocalize } from '~/hooks';
 import { Fork } from '~/components/Conversations';
 import MessageAudio from './MessageAudio';
 import { cn } from '~/utils';
 import store from '~/store';
+import StarRating from './StarRating';
+import { useUpdateMessageRatingMutation } from 'librechat-data-provider/react-query';
+import { useUpdateMessageMutation } from 'librechat-data-provider/react-query';
 
 type THoverButtons = {
   isEditing: boolean;
@@ -40,7 +43,14 @@ export default function HoverButtons({
   const endpoint = endpointType ?? _endpoint;
   const [isCopied, setIsCopied] = useState(false);
   const [TextToSpeech] = useRecoilState<boolean>(store.textToSpeech);
+  const [isRatingVisible, setIsRatingVisible] = React.useState(false);
+  const [rating, setRating] = useState(message.rating);
 
+  const conversationId = conversation?.conversationId;
+  const messageId = message.messageId;
+  const updateMessageRatingMutation = useUpdateMessageRatingMutation(conversationId ?? '');
+  const updateMessageMutation = useUpdateMessageMutation(conversationId ?? '');
+  
   const {
     hideEditButton,
     regenerateEnabled,
@@ -62,6 +72,15 @@ export default function HoverButtons({
 
   if (error) {
     return null;
+  }
+
+  const onRating = (index) => {
+    updateMessageRatingMutation.mutate({
+      conversationId: conversationId ?? '',
+      rating: index,
+      messageId,
+    });
+    setRating(index); // Update the state
   }
 
   const onEdit = () => {
@@ -149,6 +168,30 @@ export default function HoverButtons({
           <ContinueIcon className="h-4 w-4 hover:text-gray-500 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400" />
         </button>
       ) : null}
+      {
+        !message.isCreatedByUser ? (
+          <div
+            onMouseEnter={() => setIsRatingVisible(true)}
+            onMouseLeave={() => setIsRatingVisible(false)}
+          >
+            {isRatingVisible ? (
+              <StarRating rating={rating} onRating={onRating}/>
+            ) : (
+              <button
+                className={cn(
+                  'hover-button rounded-md p-1 hover:bg-gray-100 hover:text-gray-500 focus:opacity-100 dark:text-gray-400/70 dark:hover:bg-gray-700 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400 md:group-hover:visible md:group-[.final-completion]:visible',
+                )}
+                onClick={onRating}
+                type="button"
+                title={localize('com_ui_rating')}
+                disabled={hideEditButton}
+              >
+                <StarOutlineIcon size="19" />
+              </button>
+            )}
+          </div>
+        ) : null
+      }
     </div>
   );
 }

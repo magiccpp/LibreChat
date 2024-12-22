@@ -74,6 +74,16 @@ export function updateMessage(payload: t.TUpdateMessageRequest): Promise<unknown
   return request.put(endpoints.messages(conversationId, messageId), { text });
 }
 
+export function updateMessageRating(payload: t.TUpdateMessageRatingRequest): Promise<unknown> {
+  const { conversationId, messageId, rating } = payload;
+  if (!conversationId) {
+    throw new Error('conversationId is required');
+  }
+  const url = endpoints.messages(conversationId, messageId);
+  const resp = request.put(endpoints.messages(conversationId, messageId), { rating });
+  return resp
+}
+
 export function updateMessageContent(payload: t.TUpdateMessageContent): Promise<unknown> {
   const { conversationId, messageId, index, text } = payload;
   if (!conversationId) {
