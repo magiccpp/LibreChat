@@ -183,7 +183,7 @@ export default function useChatFunctions({
       messageId: isContinued && messageId != null && messageId ? messageId : intermediateId,
       thread_id,
       error: false,
-      rating: 2.5
+      rating: 0
     };
 
     const reuseFiles =
@@ -222,7 +222,7 @@ export default function useChatFunctions({
       isEdited: isEditOrContinue,
       iconURL: convo.iconURL,
       error: false,
-      rating: 2.5
+      rating: 0
     };
 
     if (isAssistantsEndpoint(endpoint)) {

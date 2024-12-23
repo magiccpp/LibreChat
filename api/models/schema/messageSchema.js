@@ -118,8 +118,8 @@ const messageSchema = mongoose.Schema(
     attachments: { type: [{ type: mongoose.Schema.Types.Mixed }], default: undefined },
     rating: {
       type: Number,
-      default: 3,
-      min: 1,
+      default: 0,
+      min: 0,
       max: 5
     }
     /*
