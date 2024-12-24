@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useStatsQuery } from '~/data-provider';
 import { useLocalize } from '~/hooks';
 import { Table, TableHeader, TableBody, TableRow, TableCell, Input, Button } from '~/components/ui';
@@ -8,14 +8,19 @@ import { RefreshCcw } from 'lucide-react';
 
 const StatisticsPanel = () => {
   const localize = useLocalize();
-  const { data, refetch, isRefetching} = useStatsQuery();
-  console.log(data);
+  
+  const { data: rawData, refetch, isRefetching} = useStatsQuery();
+
+  // Sort the data whenever rawData changes
+  const sortedData = useMemo(() => {
+    if (!rawData) return [];
+    return [...rawData].sort((a, b) => b.rating - a.rating);
+  }, [rawData]);
 
   // Handler for the refresh button
   const handleRefresh = () => {
     refetch(); // This method is provided by useQuery
   };
-
 
   // simply visualize the data
   return (
@@ -42,7 +47,7 @@ const StatisticsPanel = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.map((row: any) => (
+            {sortedData?.map((row: any) => (
               <TableRow key={row.model}>
                 <TableCell className="w-full px-3 py-3.5 pl-6">
                   <div>{row.model}</div>
@@ -56,11 +61,7 @@ const StatisticsPanel = () => {
               </TableRow>
             ))}
           </TableBody>
-        </Table>
-
-
-
-      
+        </Table>      
     </div>
   );
 };
