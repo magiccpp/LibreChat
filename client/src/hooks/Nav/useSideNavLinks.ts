@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { MessageSquareQuote, ArrowRightToLine, Settings2, Bookmark } from 'lucide-react';
+import { MessageSquareQuote, ArrowRightToLine, Settings2, Bookmark, LineChart } from 'lucide-react';
 import {
   isAssistantsEndpoint,
   isAgentsEndpoint,
@@ -18,6 +18,7 @@ import Parameters from '~/components/SidePanel/Parameters/Panel';
 import FilesPanel from '~/components/SidePanel/Files/Panel';
 import { Blocks, AttachmentIcon } from '~/components/svg';
 import { useHasAccess } from '~/hooks';
+import StatsPanel from '~/components/SidePanel/Statistics/StatisticsPanel';
 
 export default function useSideNavLinks({
   hidePanel,
@@ -130,6 +131,14 @@ export default function useSideNavLinks({
         Component: BookmarkPanel,
       });
     }
+
+    links.push({
+      title: 'com_sidepanel_stats_panel',
+      label: '',
+      icon: LineChart,
+      id: 'statistics',
+      Component: StatsPanel,
+    });
 
     links.push({
       title: 'com_sidepanel_hide_panel',

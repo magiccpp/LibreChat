@@ -212,6 +212,9 @@ export const getRole = (roleName: string) => `${roles()}/${roleName.toLowerCase(
 export const updatePromptPermissions = (roleName: string) => `${getRole(roleName)}/prompts`;
 export const updateAgentPermissions = (roleName: string) => `${getRole(roleName)}/agents`;
 
+/* Stats */
+export const stats = () => '/api/stats';
+
 /* Conversation Tags */
 export const conversationTags = (tag?: string) =>
   `/api/tags${tag != null && tag ? `/${encodeURIComponent(tag)}` : ''}`;

@@ -729,10 +729,14 @@ export function updateAgentPermissions(
   return request.put(endpoints.updateAgentPermissions(variables.roleName), variables.updates);
 }
 
+export function getStats(): Promise<t.TStatsResponse> {
+  return request.get(endpoints.stats());
+}
+
 /* Tags */
 export function getConversationTags(): Promise<t.TConversationTagsResponse> {
   return request.get(endpoints.conversationTags());
-}
+} 
 
 export function createConversationTag(
   payload: t.TConversationTagRequest,

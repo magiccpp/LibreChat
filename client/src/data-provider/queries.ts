@@ -166,6 +166,17 @@ export const useSharedLinksInfiniteQuery = (
   );
 };
 
+export const useStatsQuery = (
+  config?: UseQueryOptions<t.TStatsResponse>,
+): QueryObserverResult<t.TStatsResponse> => {
+  return useQuery<t.TStatsResponse>([QueryKeys.stats], () => dataService.getStats(), {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    ...config,
+  });
+}
+
 export const useConversationTagsQuery = (
   config?: UseQueryOptions<t.TConversationTagsResponse>,
 ): QueryObserverResult<t.TConversationTagsResponse> => {

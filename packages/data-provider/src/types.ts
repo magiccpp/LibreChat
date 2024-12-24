@@ -189,6 +189,13 @@ export type TSharedLinkResponse = TSharedLink;
 export type TSharedLinksResponse = TSharedLink[];
 export type TDeleteSharedLinkResponse = TSharedLink;
 
+export type TStatsResponse = {
+  _id: string;
+  model: string;
+  answers: number;
+  rating: number;
+}[]
+
 // type for getting conversation tags
 export type TConversationTagsResponse = TConversationTag[];
 // type for creating conversation tag

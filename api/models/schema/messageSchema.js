@@ -119,8 +119,8 @@ const messageSchema = mongoose.Schema(
     rating: {
       type: Number,
       default: 0,
-      min: 0,
-      max: 5
+      min: -1,
+      max: 1
     }
     /*
     attachments: {
