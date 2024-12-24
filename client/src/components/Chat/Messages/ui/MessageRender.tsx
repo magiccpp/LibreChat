@@ -89,7 +89,7 @@ const MessageRender = memo(
     const showCardRender = isLast && !(isSubmittingFamily === true) && isCard === true;
     const isLatestCard = isCard === true && !(isSubmittingFamily === true) && isLatestMessage;
     const clickHandler =
-      showCardRender && !isLatestMessage
+      showCardRender
         ? () => {
           logger.log(`Message Card click: Setting ${msg.messageId} as latest message`);
           logger.dir(msg);
