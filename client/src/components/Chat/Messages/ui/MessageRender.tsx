@@ -1,4 +1,5 @@
 import { useRecoilValue } from 'recoil';
+import React, { useState } from 'react';
 import { useCallback, useMemo, memo } from 'react';
 import type { TMessage } from 'librechat-data-provider';
 import type { TMessageProps } from '~/common';
@@ -15,11 +16,15 @@ import { cn, logger } from '~/utils';
 import store from '~/store';
 import { useAddedChatContext, useChatContext } from '~/Providers';
 
+
 type MessageRenderProps = {
   message?: TMessage;
   isCard?: boolean;
   isMultiMessage?: boolean;
   isSubmittingFamily?: boolean;
+  rating: number;
+  onMessageClick: (message: TMessage) => void;
+  onRating: (message: TMessage, rating: number) => void;
 } & Pick<
   TMessageProps,
   'currentEditId' | 'setCurrentEditId' | 'siblingIdx' | 'setSiblingIdx' | 'siblingCount'
@@ -36,6 +41,9 @@ const MessageRender = memo(
     isMultiMessage,
     setCurrentEditId,
     isSubmittingFamily,
+    rating,
+    onMessageClick,
+    onRating,
   }: MessageRenderProps) => {
     const {
       ask,
@@ -85,12 +93,13 @@ const MessageRender = memo(
         ? () => {
           logger.log(`Message Card click: Setting ${msg.messageId} as latest message`);
           logger.dir(msg);
+          onMessageClick && onMessageClick(msg);
           setLatestMessage(msg);
         }
         : undefined;
 
     // Determine if the text should be blurred
-    const shouldBlurText = messageLabel === msg?.sender && isBlindMode && addedConvo !== null;
+    const shouldHideText  = messageLabel === msg?.sender && isBlindMode && addedConvo !== null;
     return (
       <div
         aria-label={`message-${msg.depth}-${msg.messageId}`}
@@ -118,13 +127,11 @@ const MessageRender = memo(
         <div className="relative flex flex-shrink-0 flex-col items-end">
           <div>
             <div className="pt-0.5">
-              <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full"
-                  style={{
-                    filter: shouldBlurText ? 'blur(5px) grayscale(100%) brightness(50%)' : 'none',
-                  }}
-                >
-                <Icon message={msg} conversation={conversation} assistant={assistant} />
-              </div>
+            {!shouldHideText && ( // Only render if shouldHideText is false
+            <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
+              <Icon message={msg} conversation={conversation} assistant={assistant} />
+            </div>
+          )}
             </div>
           </div>
         </div>
@@ -135,11 +142,11 @@ const MessageRender = memo(
           )}
 
         >
-          <h2 className={cn('select-none font-semibold', fontSize, 'blurred-text')}
-            style={{
-                        filter: shouldBlurText ? 'blur(5px)' : 'none',
-                        userSelect: 'none',
-              }} >{messageLabel}</h2>
+          {!shouldHideText && ( // Only render if shouldHideText is false
+            <h2 className={cn('select-none font-semibold', fontSize)}>
+              {messageLabel}
+            </h2>
+          )}
           <div className="flex-col gap-1 md:gap-3">
             <div className="flex max-w-full flex-grow flex-col gap-0">
               <MessageContext.Provider
@@ -187,6 +194,8 @@ const MessageRender = memo(
                 handleContinue={handleContinue}
                 latestMessage={latestMessage}
                 isLast={isLast}
+                rating={rating}
+                onRating={onRating}
               />
             </SubRow>
           )}

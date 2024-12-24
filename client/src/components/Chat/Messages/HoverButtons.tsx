@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import type { TConversation, TMessage } from 'librechat-data-provider';
-import { EditIcon, Clipboard, CheckMark, ContinueIcon, RegenerateIcon, StarOutlineIcon} from '~/components/svg';
+import { EditIcon, Clipboard, CheckMark, ContinueIcon, RegenerateIcon } from '~/components/svg';
+import { ThumbUpFilledIcon, ThumbUpOutlineIcon, ThumbDownFilledIcon, ThumbDownOutlineIcon} from '~/components/svg';
 import { useGenerationsByLatest, useLocalize } from '~/hooks';
 import { Fork } from '~/components/Conversations';
 import MessageAudio from './MessageAudio';
 import { cn } from '~/utils';
 import store from '~/store';
-import StarRating from './StarRating';
 import { useUpdateMessageRatingMutation } from 'librechat-data-provider/react-query';
-import { useUpdateMessageMutation } from 'librechat-data-provider/react-query';
 
 type THoverButtons = {
   isEditing: boolean;
@@ -23,6 +22,8 @@ type THoverButtons = {
   latestMessage: TMessage | null;
   isLast: boolean;
   index: number;
+  rating: number;
+  onRating: (message: TMessage, rating: number) => void;
 };
 
 export default function HoverButtons({
@@ -37,20 +38,15 @@ export default function HoverButtons({
   handleContinue,
   latestMessage,
   isLast,
+  rating,
+  onRating,
 }: THoverButtons) {
   const localize = useLocalize();
   const { endpoint: _endpoint, endpointType } = conversation ?? {};
   const endpoint = endpointType ?? _endpoint;
   const [isCopied, setIsCopied] = useState(false);
   const [TextToSpeech] = useRecoilState<boolean>(store.textToSpeech);
-  const [isRatingVisible, setIsRatingVisible] = React.useState(false);
-  const [rating, setRating] = useState(message.rating);
-
-  const conversationId = conversation?.conversationId;
-  const messageId = message.messageId;
-  const updateMessageRatingMutation = useUpdateMessageRatingMutation(conversationId ?? '');
-  const updateMessageMutation = useUpdateMessageMutation(conversationId ?? '');
-  
+  const updateMessageRatingMutation = useUpdateMessageRatingMutation(conversation?.conversationId ?? '');
   const {
     hideEditButton,
     regenerateEnabled,
@@ -74,14 +70,6 @@ export default function HoverButtons({
     return null;
   }
 
-  const onRating = (index) => {
-    updateMessageRatingMutation.mutate({
-      conversationId: conversationId ?? '',
-      rating: index,
-      messageId,
-    });
-    setRating(index); // Update the state
-  }
 
   const onEdit = () => {
     if (isEditing) {
@@ -170,25 +158,46 @@ export default function HoverButtons({
       ) : null}
       {
         !message.isCreatedByUser ? (
-          <div
-            onMouseEnter={() => setIsRatingVisible(true)}
-            onMouseLeave={() => setIsRatingVisible(false)}
-          >
-            {isRatingVisible ? (
-              <StarRating rating={rating} onRating={onRating}/>
-            ) : (
-              <button
-                className={cn(
-                  'hover-button rounded-md p-1 hover:bg-gray-100 hover:text-gray-500 focus:opacity-100 dark:text-gray-400/70 dark:hover:bg-gray-700 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400 md:group-hover:visible md:group-[.final-completion]:visible',
-                )}
-                onClick={onRating}
-                type="button"
-                title={localize('com_ui_rating')}
-                disabled={hideEditButton}
-              >
-                <StarOutlineIcon size="19" />
-              </button>
-            )}
+          <div className="flex gap-2">
+            <button
+              className={cn(
+                'hover-button rounded-md p-1 hover:bg-gray-100 focus:opacity-100 dark:hover:bg-gray-700',
+                rating === 1 ? 'text-blue-500' : 'text-gray-400/70 dark:text-gray-400/70 hover:text-gray-500 dark:hover:text-gray-200'
+              )}
+              onClick={(e) => {
+                e.stopPropagation(); // Stop event bubbling
+                onRating(message, rating === 1 ? 0 : 1);
+              }}
+              type="button"
+              title={localize('thumbs_up')}
+              disabled={hideEditButton}
+            >
+              {rating === 1 ? (
+                <ThumbUpFilledIcon size="19" />
+              ) : (
+                <ThumbUpOutlineIcon size="19" />
+              )}
+            </button>
+            <button
+              className={cn(
+                'hover-button rounded-md p-1 hover:bg-gray-100 focus:opacity-100 dark:hover:bg-gray-700',
+                rating === -1 ? 'text-blue-500' : 'text-gray-400/70 dark:text-gray-400/70 hover:text-gray-500 dark:hover:text-gray-200'
+              )}
+              onClick={(e) => {
+                e.stopPropagation(); // Stop event bubbling
+                onRating(message, rating === -1 ? 0 : -1);
+              }}
+              
+              type="button"
+              title={localize('thumbs_down')}
+              disabled={hideEditButton}
+            >
+              {rating === -1 ? (
+                <ThumbDownFilledIcon size="19" />
+              ) : (
+                <ThumbDownOutlineIcon size="19" />
+              )}
+            </button>
           </div>
         ) : null
       }
