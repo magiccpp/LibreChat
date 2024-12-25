@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import type { TError } from 'librechat-data-provider';
 import { useExportDataQuery } from '~/data-provider';
 import { useLocalize, useConversations } from '~/hooks';
-import { saveAs } from 'file-saver';
+
 import { Spinner } from '~/components/svg';
 import { cn } from '~/utils';
 import { Upload } from 'lucide-react';
