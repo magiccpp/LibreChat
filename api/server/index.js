@@ -110,6 +110,7 @@ const startServer = async () => {
   app.use('/api/bedrock', routes.bedrock);
   app.use('/api/stats', routes.stats);
   app.use('/api/tags', routes.tags);
+  app.use('/api/export_data', routes.exportData);
 
   app.use((req, res) => {
     res.set({

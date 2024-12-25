@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import ImportConversations from './ImportConversations';
+import ExportConversations from './ExportConversations';
 import { RevokeAllKeys } from './RevokeAllKeys';
 import { DeleteCache } from './DeleteCache';
 import { useOnClickOutside } from '~/hooks';
@@ -15,6 +16,9 @@ function Data() {
     <div className="flex flex-col gap-3 p-1 text-sm text-text-primary">
       <div className="pb-3">
         <ImportConversations />
+      </div>
+      <div className="pb-3">
+        <ExportConversations />
       </div>
       <div className="pb-3">
         <SharedLinks />

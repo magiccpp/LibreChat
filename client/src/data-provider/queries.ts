@@ -177,6 +177,17 @@ export const useStatsQuery = (
   });
 }
 
+export const useExportDataQuery = (
+  config?: UseQueryOptions<t.TExportDataResponse>,
+): QueryObserverResult<t.TExportDataResponse> => {
+  return useQuery<t.TExportDataResponse>([QueryKeys.exportData], () => dataService.getExportData(), {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    ...config,
+  });
+}
+
 export const useConversationTagsQuery = (
   config?: UseQueryOptions<t.TConversationTagsResponse>,
 ): QueryObserverResult<t.TConversationTagsResponse> => {

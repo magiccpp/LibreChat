@@ -5,7 +5,7 @@ import { Table, TableHeader, TableBody, TableRow, TableCell, Button } from '~/co
 import { RefreshCcw, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 
 // Define possible sort fields
-type SortField = 'model' | 'matches' | 'rating';
+type SortField = 'model' | 'matches' | 'rating' | 'wins';
 
 // Define sort direction
 type SortDirection = 'asc' | 'desc';
@@ -87,6 +87,16 @@ const StatisticsPanel = () => {
                 {getSortIcon('matches')}
               </div>
             </TableCell>
+
+            <TableCell
+              className="w-full bg-header-primary px-3 py-3.5 sm:pl-6 cursor-pointer hover:bg-header-secondary"
+              onClick={() => handleSort('wins')}
+            >
+              <div className="flex items-center gap-2">
+                {localize('com_ui_number_wins')}
+                {getSortIcon('wins')}
+              </div>
+            </TableCell>
             <TableCell
               className="w-full bg-header-primary px-3 py-3.5 sm:pl-6 cursor-pointer hover:bg-header-secondary"
               onClick={() => handleSort('rating')}
@@ -106,6 +116,9 @@ const StatisticsPanel = () => {
               </TableCell>
               <TableCell className="w-full px-3 py-3.5 sm:pl-6">
                 <div>{row.matches}</div>
+              </TableCell>
+              <TableCell className="w-full px-3 py-3.5 sm:pl-6">
+                <div>{row.wins}</div>
               </TableCell>
               <TableCell className="w-full px-3 py-3.5 sm:pl-6">
                 <div>{row.rating}</div>
