@@ -7,6 +7,7 @@ import { Spinner } from '~/components/svg';
 import { cn } from '~/utils';
 import { Upload } from 'lucide-react';
 import { createLucideIcon } from 'lucide-react';
+import { saveAs } from 'file-saver';
 
 const ExportIcon = createLucideIcon('Export', [
   ['path', { d: 'M12 5v10' }],
@@ -23,9 +24,11 @@ function ExportConversations() {
   const localize = useLocalize();
   const { data, error, isLoading, refetch } = useExportDataQuery();
 
-  const [allowImport, setAllowImport] = useState(true);
+  const [allowExport, setAllowExport] = useState(true);
 
   const handleExportClick = async () => {
+    setAllowExport(false); // Disable button and show spinner
+
     try {
       // Fetch the export data
       const result = await refetch();
@@ -33,6 +36,7 @@ function ExportConversations() {
       // Check if data exists
       if (!result.data) {
         console.error('No export data available');
+        setAllowExport(true); // Enable the export button again if no data is available
         return;
       }
 
@@ -45,6 +49,8 @@ function ExportConversations() {
     } catch (error) {
       // Handle any errors
       console.error('Error exporting conversations:', error);
+    }  finally {
+      setAllowExport(true); // Re-enable button after export
     }
   };
 
@@ -53,11 +59,11 @@ function ExportConversations() {
       <div>{localize('com_ui_export_conversation_info')}</div>
       <button
         onClick={handleExportClick}
-        disabled={!allowImport}
+        disabled={!allowExport}
         aria-label={localize('com_ui_export_conversation')}
         className="btn btn-neutral"
       >
-        {allowImport ? (
+        {allowExport ? (
           <Upload className="mr-1 flex h-4 w-4 items-center stroke-1" />
         ) : (
           <Spinner className="mr-1 w-4" />
