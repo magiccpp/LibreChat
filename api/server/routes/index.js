@@ -26,6 +26,7 @@ const user = require('./user');
 const ask = require('./ask');
 const banner = require('./banner');
 const stats = require('./stats');
+const exportData = require('./exportData');
 
 module.exports = {
   ask,
@@ -56,4 +57,5 @@ module.exports = {
   staticRoute,
   banner,
   stats,
+  exportData
 };

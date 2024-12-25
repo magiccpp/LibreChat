@@ -215,6 +215,9 @@ export const updateAgentPermissions = (roleName: string) => `${getRole(roleName)
 /* Stats */
 export const stats = () => '/api/stats';
 
+/* Export Data */
+export const exportData = () => '/api/export_data';
+
 /* Conversation Tags */
 export const conversationTags = (tag?: string) =>
   `/api/tags${tag != null && tag ? `/${encodeURIComponent(tag)}` : ''}`;

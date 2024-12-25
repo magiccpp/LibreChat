@@ -196,6 +196,15 @@ export type TStatsResponse = {
   rating: number;
 }[]
 
+// Or if you want to be more specific about the role values:
+type Message = {
+  role: "user" | "assistant" | "system";  // specify exact possible values
+  content: string;
+}
+
+// Define the export data response type
+export type TExportDataResponse = Message[][];
+
 // type for getting conversation tags
 export type TConversationTagsResponse = TConversationTag[];
 // type for creating conversation tag

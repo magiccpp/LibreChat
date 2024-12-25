@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { logger } = require('~/config');
 const requireJwtAuth = require('~/server/middleware/requireJwtAuth');
 const bypassAuth = (req, res, next) => next();
 const { getConvosByPage } = require('~/models/Conversation');
@@ -24,8 +23,8 @@ function getActualScore(points_scored, points_opponent) {
 
 function updateModelPoint(currentELORating, opponentELORating, matchPoint, opponentMatchPoint) {
   // Validate inputs
-  if (typeof currentELORating !== 'number' || 
-      typeof matchPoint !== 'number' || 
+  if (typeof currentELORating !== 'number' ||
+      typeof matchPoint !== 'number' ||
       typeof opponentMatchPoint !== 'number') {
     throw new Error('Invalid input: All arguments must be numbers');
   }
@@ -58,59 +57,72 @@ router.get('/', requireJwtAuth, async (req, res) => {
         allConvos = allConvos.concat(resp.conversations);
       }
     }
-    
+
     // go through all cpnversations and each conversation is a match.
-    let modelELORatings = {};
-    let modelPlayedMatches = {}
+
+    let modelStats = {};
     const initialPoints = 1500;
+
     for (let i = 0; i < allConvos.length; i++) {
       const convo = allConvos[i];
       const conversationId = convo.conversationId;
       const messages = (await getMessages({ conversationId })) ?? [];
-      let modelMatchPoints = {}
-      
+      let modelMatchPoints = {};
+
       for (let j = 0; j < messages.length; j++) {
         const message = messages[j];
         if (!message.model) {
           continue;
         }
-        
-        // Add the model to the allModels array if not already present
-        if (!modelELORatings[message.model]) {
-          modelELORatings[message.model] = initialPoints;
+
+        const model = message.model;
+        if (!modelStats[model]) {
+          modelStats[model] = {
+            rating: initialPoints,
+            matches: 0,
+            wins: 0
+          };
         }
 
-        if (!modelPlayedMatches[message.model]) {
-          modelPlayedMatches[message.model] = 0;
-        }
-
-        if (modelMatchPoints[message.model]) {
-          modelMatchPoints[message.model] + message.rating;
+        if (modelMatchPoints[model]) {
+          modelMatchPoints[model] += message.rating;
         } else {
-          modelMatchPoints[message.model] = message.rating;
+          modelMatchPoints[model] = message.rating;
         }
       }
 
-      // Update the model's points using ELO algorithm if there is 2 models in modelRatings
+      // Update the model's points using ELO algorithm if there are 2 models
       if (Object.keys(modelMatchPoints).length === 2) {
         const model1 = Object.keys(modelMatchPoints)[0];
         const model2 = Object.keys(modelMatchPoints)[1];
-        const curELORating1 = modelELORatings[model1];
-        const curELORating2 = modelELORatings[model2];
+
         const matchPoint1 = modelMatchPoints[model1];
         const matchPoint2 = modelMatchPoints[model2];
-        modelELORatings[model1] = updateModelPoint(curELORating1, curELORating2, matchPoint1, matchPoint2);
-        modelELORatings[model2] = updateModelPoint(curELORating2, curELORating1, matchPoint2, matchPoint1);
-        modelPlayedMatches[model1]++;
-        modelPlayedMatches[model2]++;
+
+        const newRating1 = updateModelPoint(modelStats[model1].rating, modelStats[model2].rating, matchPoint1, matchPoint2);
+        const newRating2 = updateModelPoint(modelStats[model2].rating, modelStats[model1].rating, matchPoint2, matchPoint1);
+
+        modelStats[model1].rating = newRating1;
+        modelStats[model2].rating = newRating2;
+        modelStats[model1].matches++;
+        modelStats[model2].matches++;
+
+        if (matchPoint1 > matchPoint2) {
+          modelStats[model1].wins++;
+        } else if (matchPoint2 > matchPoint1) {
+          modelStats[model2].wins++;
+        }
       }
     }
 
-    let resultArray = Object.keys(modelELORatings).map(model => ({
+    let resultArray = Object.keys(modelStats)
+    .map(model => ({
       model: model,
-      rating: modelELORatings[model],
-      matches: modelPlayedMatches[model]
-    }));
+      rating: modelStats[model].rating,
+      matches: modelStats[model].matches,
+      wins: modelStats[model].wins
+    }))
+    .filter(model => model.matches > 0);
 
     return res.status(200).json(resultArray);
   } catch (e) {

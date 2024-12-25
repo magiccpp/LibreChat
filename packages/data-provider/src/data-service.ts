@@ -733,10 +733,14 @@ export function getStats(): Promise<t.TStatsResponse> {
   return request.get(endpoints.stats());
 }
 
+export function getExportData(): Promise<t.TExportDataResponse> {
+  return request.get(endpoints.exportData());
+}
+
 /* Tags */
 export function getConversationTags(): Promise<t.TConversationTagsResponse> {
   return request.get(endpoints.conversationTags());
-} 
+}
 
 export function createConversationTag(
   payload: t.TConversationTagRequest,
