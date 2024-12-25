@@ -47,6 +47,7 @@ export enum QueryKeys {
   userTerms = 'userTerms',
   banner = 'banner',
   stats = 'stats',
+  exportData = 'exportData',
 }
 
 export enum MutationKeys {

@@ -1,77 +1,107 @@
-import { useState, useRef } from 'react';
-import type { TError } from 'librechat-data-provider';
+import { useRef, useState } from 'react';
+
 import { useExportDataQuery } from '~/data-provider';
-import { useLocalize, useConversations } from '~/hooks';
+import { useLocalize } from '~/hooks';
 
 import { Spinner } from '~/components/svg';
-import { cn } from '~/utils';
 import { Upload } from 'lucide-react';
-import { createLucideIcon } from 'lucide-react';
 import { saveAs } from 'file-saver';
 
-const ExportIcon = createLucideIcon('Export', [
-  ['path', { d: 'M12 5v10' }],
 
-  ['path', { d: 'm16 10-4-4-4 4' }],
-  ['path', { d: 'M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4' }]
-]);
-
-enum ExportFormat {
-  OPENAI_JSONL = 'OpenAI jsonl'
-}
+// Define the available formats using an object pattern for better type-safety
+const exportFormats = {
+  OPENAI_JSONL: 'OpenAI jsonl',
+  SHAREGPT_JSON: 'ShareGPT json',
+};
 
 function ExportConversations() {
   const localize = useLocalize();
-  const { data, error, isLoading, refetch } = useExportDataQuery();
-
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [allowExport, setAllowExport] = useState(true);
+  const [selectedFormat, setSelectedFormat] = useState(exportFormats.OPENAI_JSONL);
 
-  const handleExportClick = async () => {
-    setAllowExport(false); // Disable button and show spinner
+  // This fetches data based on the selected format
+  const { refetch } = useExportDataQuery();
+
+  const handleExportClick = () => {
+    // Toggle the dropdown menu
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const handleFormatSelect = async (format) => {
+    setSelectedFormat(format);
+    setDropdownOpen(false);  // Close the dropdown after selection
+    setAllowExport(false);   // Disable the export button
 
     try {
-      // Fetch the export data
       const result = await refetch();
 
-      // Check if data exists
       if (!result.data) {
         console.error('No export data available');
-        setAllowExport(true); // Enable the export button again if no data is available
         return;
       }
 
-      // Convert data to JSONL format
-      const jsonlContent = result.data.map(item => JSON.stringify(item)).join('\n');
-      const blob = new Blob([jsonlContent], { type: 'application/jsonl' });
-      const filename = 'conversations.jsonl';
+      let content, contentType, filename;
+      if (format === exportFormats.OPENAI_JSONL) {
+        content = result.data.map(item => JSON.stringify(item)).join('\n');
+        contentType = 'application/jsonl';
+        filename = 'conversations.jsonl';
+      } else if (format === exportFormats.SHAREGPT_JSON) {
+        content = JSON.stringify(result.data, null, 2);
+        contentType = 'application/json';
+        filename = 'conversations.json';
+      }
 
-      saveAs(blob, filename);
+      if (content) {
+        const blob = new Blob([content], { type: contentType });
+        saveAs(blob, filename);
+      }
+
     } catch (error) {
-      // Handle any errors
       console.error('Error exporting conversations:', error);
-    }  finally {
-      setAllowExport(true); // Re-enable button after export
+    } finally {
+      setAllowExport(true); // Re-enable the export button
     }
   };
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="relative flex items-center justify-between">
       <div>{localize('com_ui_export_conversation_info')}</div>
-      <button
-        onClick={handleExportClick}
-        disabled={!allowExport}
-        aria-label={localize('com_ui_export_conversation')}
-        className="btn btn-neutral"
-      >
-        {allowExport ? (
-          <Upload className="mr-1 flex h-4 w-4 items-center stroke-1" />
-        ) : (
-          <Spinner className="mr-1 w-4" />
+      <div className="relative">
+        <button
+          onClick={handleExportClick}
+          disabled={!allowExport}
+          aria-label={localize('com_ui_export_conversation')}
+          className="btn btn-neutral"
+        >
+          {allowExport ? (
+            <Upload className="mr-1 flex h-4 w-4 items-center stroke-1" />
+          ) : (
+            <Spinner className="mr-1 w-4" />
+          )}
+          <span>{localize('com_ui_export_conversation')}</span>
+        </button>
+        {dropdownOpen && (
+          <div
+            className="absolute right-0 bg-white border rounded mt-2 shadow-lg z-50"
+            style={{ minWidth: '200px' }} // Ensure this width accommodates your longest text without wrapping
+          >
+            <ul>
+              {Object.values(exportFormats).map((format) => (
+                <li key={format}>
+                  <button
+                    onClick={() => handleFormatSelect(format)}
+                    className="block w-full px-4 py-2 hover:bg-gray-200 text-left"
+                  >
+                    {format}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
-        <span>{localize('com_ui_export_conversation')}</span>
-      </button>
+      </div>
     </div>
   );
 }
-
 export default ExportConversations;
