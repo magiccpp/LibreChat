@@ -29,7 +29,7 @@ const MessageContainer = React.memo(
 export default function Message(props: TMessageProps) {
   // Randomized positions for MessageRender instances
   const [renderOrder, setRenderOrder] = useState<number[]>([0, 1]);
-  
+
   const {
     showSibling,
     conversation,
@@ -47,7 +47,6 @@ export default function Message(props: TMessageProps) {
     setRenderOrder(Math.random() > 0.5 ? [0, 1] : [1, 0]);
   }, []);
 
-
   const updateMessageRatingMutation = useUpdateMessageRatingMutation(conversation?.conversationId ?? '');
 
   const updateMessageRating = useCallback(
@@ -62,28 +61,28 @@ export default function Message(props: TMessageProps) {
         console.error('Failed to update message rating', error);
       }
     },
-    [updateMessageRatingMutation]
+    [updateMessageRatingMutation],
   );
 
   const onMessageClick = (clickedMessage) => {
     const clickedMessageId = clickedMessage?.messageId;
     if (clickedMessageId === message?.messageId) {
-      message && updateMessageRating(message?.messageId, 1);
+      message && updateMessageRating(message.messageId, 1);
       const minRating = Math.min(ratingArray[1], 0);
       if (ratingArray[1] === 1) {
-        siblingMessage && updateMessageRating(siblingMessage?.messageId, 0);
+        siblingMessage && updateMessageRating(siblingMessage.messageId, 0);
       }
       setRatingArray([1,minRating]);
     } else {
       const minRating = Math.min(ratingArray[0], 0);
       if (ratingArray[0] === 1) {
-        message && updateMessageRating(message?.messageId, 0);
+        message && updateMessageRating(message.messageId, 0);
       }
-      siblingMessage && updateMessageRating(siblingMessage?.messageId, 1);
+      siblingMessage && updateMessageRating(siblingMessage.messageId, 1);
 
       setRatingArray([minRating,1]);
     }
-  }
+  };
 
   const onRating = (ratedMessage, rating) => {
     ratedMessage && updateMessageRating(ratedMessage.messageId, rating);
@@ -92,7 +91,7 @@ export default function Message(props: TMessageProps) {
     } else {
       setRatingArray([ratingArray[0], rating]);
     }
-  }
+  };
 
   if (!message || typeof message !== 'object') {
     return null;
@@ -108,7 +107,7 @@ export default function Message(props: TMessageProps) {
     {
       message: siblingMessage ?? latestMultiMessage ?? undefined,
       isMultiMessage: true,
-    }
+    },
   ];
 
   return (
@@ -118,26 +117,26 @@ export default function Message(props: TMessageProps) {
           <div className="m-auto my-2 flex justify-center p-4 py-2 md:gap-6">
             <div className="flex w-full flex-row flex-wrap justify-between gap-1 md:max-w-5xl md:flex-nowrap md:gap-2 lg:max-w-5xl xl:max-w-6xl">
               {renderOrder.map((order) => (
-                  <MessageRender
-                    {...props}
-                    {...renderMessages[order]}
-                    isCard
-                    isSubmittingFamily={isSubmittingFamily}
-                    rating={ratingArray[order]}
-                    onMessageClick={onMessageClick}
-                    onRating={onRating}
-                  />
-                ))}
+                <MessageRender
+                  {...props}
+                  {...renderMessages[order]}
+                  isCard
+                  isSubmittingFamily={isSubmittingFamily}
+                  rating={ratingArray[order]}
+                  onMessageClick={onMessageClick}
+                  onRating={onRating}
+                />
+              ))}
             </div>
           </div>
         ) : (
           <div className="m-auto justify-center p-4 py-2 md:gap-6 ">
-            <MessageRender 
+            <MessageRender
               {...props}
               rating={ratingArray[0]}
               onRating={onRating}
               onMessageClick={onMessageClick}
-              />
+            />
           </div>
         )}
       </MessageContainer>

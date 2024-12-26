@@ -5,7 +5,6 @@ const { requireJwtAuth, validateMessageReq } = require('~/server/middleware');
 const { countTokens } = require('~/server/utils');
 const { logger } = require('~/config');
 
-
 const router = express.Router();
 router.use(requireJwtAuth);
 

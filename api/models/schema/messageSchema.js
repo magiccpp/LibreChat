@@ -120,8 +120,8 @@ const messageSchema = mongoose.Schema(
       type: Number,
       default: 0,
       min: -1,
-      max: 1
-    }
+      max: 1,
+    },
     /*
     attachments: {
       type: [
@@ -145,7 +145,7 @@ const messageSchema = mongoose.Schema(
     },
     */
   },
-  
+
   { timestamps: true },
 
 );

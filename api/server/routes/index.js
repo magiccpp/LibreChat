@@ -57,5 +57,5 @@ module.exports = {
   staticRoute,
   banner,
   stats,
-  exportData
+  exportData,
 };

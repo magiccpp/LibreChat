@@ -35,17 +35,15 @@ const StatisticsPanel = () => {
     }
   };
 
-
-
   // Get sort icon for header
   const getSortIcon = (field: SortField) => {
-    if (sortField !== field) return <ArrowUpDown className="size-4" />;
+    if (sortField !== field) {return <ArrowUpDown className="size-4" />;}
     return sortDirection === 'asc' ? <ArrowUp className="size-4" /> : <ArrowDown className="size-4" />;
   };
 
   // Sort the data whenever rawData, sortField, or sortDirection changes
   const sortedData = useMemo(() => {
-    if (!rawData) return [];
+    if (!rawData) {return [];}
 
     return [...rawData].sort((a, b) => {
       let compareResult = 0;
@@ -116,7 +114,7 @@ const StatisticsPanel = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {sortedData?.map((row: any) => (
+          {sortedData.map((row: any) => (
             <TableRow key={row.model}>
               <TableCell className="w-full px-3 py-3.5 pl-6">
                 <div>{row.model}</div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import type { TConversation, TMessage } from 'librechat-data-provider';
 import { EditIcon, Clipboard, CheckMark, ContinueIcon, RegenerateIcon } from '~/components/svg';
-import { ThumbUpFilledIcon, ThumbUpOutlineIcon, ThumbDownFilledIcon, ThumbDownOutlineIcon} from '~/components/svg';
+import { ThumbUpFilledIcon, ThumbUpOutlineIcon, ThumbDownFilledIcon, ThumbDownOutlineIcon } from '~/components/svg';
 import { useGenerationsByLatest, useLocalize } from '~/hooks';
 import { Fork } from '~/components/Conversations';
 import MessageAudio from './MessageAudio';
@@ -69,7 +69,6 @@ export default function HoverButtons({
   if (error) {
     return null;
   }
-
 
   const onEdit = () => {
     if (isEditing) {
@@ -162,7 +161,7 @@ export default function HoverButtons({
             <button
               className={cn(
                 'hover-button rounded-md p-1 hover:bg-gray-100 focus:opacity-100 dark:hover:bg-gray-700',
-                rating === 1 ? 'text-blue-500' : 'text-gray-400/70 dark:text-gray-400/70 hover:text-gray-500 dark:hover:text-gray-200'
+                rating === 1 ? 'text-blue-500' : 'text-gray-400/70 dark:text-gray-400/70 hover:text-gray-500 dark:hover:text-gray-200',
               )}
               onClick={(e) => {
                 e.stopPropagation(); // Stop event bubbling
@@ -181,13 +180,13 @@ export default function HoverButtons({
             <button
               className={cn(
                 'hover-button rounded-md p-1 hover:bg-gray-100 focus:opacity-100 dark:hover:bg-gray-700',
-                rating === -1 ? 'text-blue-500' : 'text-gray-400/70 dark:text-gray-400/70 hover:text-gray-500 dark:hover:text-gray-200'
+                rating === -1 ? 'text-blue-500' : 'text-gray-400/70 dark:text-gray-400/70 hover:text-gray-500 dark:hover:text-gray-200',
               )}
               onClick={(e) => {
                 e.stopPropagation(); // Stop event bubbling
                 onRating(message, rating === -1 ? 0 : -1);
               }}
-              
+
               type="button"
               title={localize('thumbs_down')}
               disabled={hideEditButton}

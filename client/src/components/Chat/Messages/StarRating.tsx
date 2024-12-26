@@ -103,5 +103,4 @@ const HalfStarOutlineIcon = ({ className }) => (
   </svg>
 );
 
-
 export default StarRating;

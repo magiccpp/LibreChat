@@ -198,7 +198,7 @@ export type TStatsResponse = {
 
 // Or if you want to be more specific about the role values:
 type Message = {
-  role: "user" | "assistant" | "system";  // specify exact possible values
+  role: 'user' | 'assistant' | 'system';  // specify exact possible values
   content: string;
 }
 

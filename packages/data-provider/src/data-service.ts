@@ -81,7 +81,7 @@ export function updateMessageRating(payload: t.TUpdateMessageRatingRequest): Pro
   }
   const url = endpoints.messages(conversationId, messageId);
   const resp = request.put(endpoints.messages(conversationId, messageId), { rating });
-  return resp
+  return resp;
 }
 
 export function updateMessageContent(payload: t.TUpdateMessageContent): Promise<unknown> {

@@ -5,7 +5,6 @@ const requireJwtAuth = require('~/server/middleware/requireJwtAuth');
 const { getConvosByPage } = require('~/models/Conversation');
 const { getMessages } = require('~/models');
 
-
 // Helper function to build tree from messages
 function buildMessageTree(messages) {
   // Create a map of messages by ID for easy lookup
@@ -16,7 +15,7 @@ function buildMessageTree(messages) {
   messages.forEach(message => {
     messageMap.set(message.messageId, {
       ...message,
-      children: []
+      children: [],
     });
   });
 
@@ -24,7 +23,7 @@ function buildMessageTree(messages) {
   messages.forEach(message => {
     const node = messageMap.get(message.messageId);
 
-    if (message.parentMessageId === "00000000-0000-0000-0000-000000000000") {
+    if (message.parentMessageId === '00000000-0000-0000-0000-000000000000') {
       root = node;
     } else {
       const parentNode = messageMap.get(message.parentMessageId);
@@ -38,13 +37,13 @@ function buildMessageTree(messages) {
 }
 
 function findLongestPath(node, currentPath = []) {
-  if (!node) return [];
+  if (!node) {return [];}
 
   currentPath = [...currentPath, node];
 
   // If this is a leaf node, return current path
   if (node.children.length === 0) {
-      return currentPath;
+    return currentPath;
   }
 
   let bestPath = currentPath;
@@ -52,17 +51,17 @@ function findLongestPath(node, currentPath = []) {
 
   // Check all child paths
   node.children.forEach(child => {
-      const childPath = findLongestPath(child, currentPath);
-      const childRating = childPath[childPath.length - 1].rating || 0;
+    const childPath = findLongestPath(child, currentPath);
+    const childRating = childPath[childPath.length - 1].rating || 0;
 
-      // Update best path if:
-      // 1. Child path is longer, OR
-      // 2. Child path is same length but has higher rating
-      if (childPath.length > bestPath.length ||
+    // Update best path if:
+    // 1. Child path is longer, OR
+    // 2. Child path is same length but has higher rating
+    if (childPath.length > bestPath.length ||
           (childPath.length === bestPath.length && childRating > bestRating)) {
-          bestPath = childPath;
-          bestRating = childRating;
-      }
+      bestPath = childPath;
+      bestRating = childRating;
+    }
   });
 
   return bestPath;
@@ -71,8 +70,8 @@ function findLongestPath(node, currentPath = []) {
 function convertToOpenAIFormat(longestPath, noGreetings) {
   if (!noGreetings) {
     return longestPath.map(message => ({
-      role: message.isCreatedByUser ? "user" : "assistant",
-      content: message.text
+      role: message.isCreatedByUser ? 'user' : 'assistant',
+      content: message.text,
     }));
   }
 
@@ -89,8 +88,8 @@ function convertToOpenAIFormat(longestPath, noGreetings) {
       skipNext = true; // Skip the next (assistant) message
     } else {
       filteredPath.push({
-        role: message.isCreatedByUser ? "user" : "assistant",
-        content: message.text
+        role: message.isCreatedByUser ? 'user' : 'assistant',
+        content: message.text,
       });
     }
   }
@@ -104,11 +103,11 @@ router.get('/', requireJwtAuth, async (req, res) => {
     // check if there is the query parameter 'no_greetings'
     const noGreetings = req.query.no_greetings || true;
     let allConvos = [];
-    const resp = await getConvosByPage(userId, 1, 100, false)
+    const resp = await getConvosByPage(userId, 1, 100, false);
     allConvos = allConvos.concat(resp.conversations);
     if (resp.pages > 1) {
       for (let i = 2; i <= resp.pages; i++) {
-        const resp = await getConvosByPage(userId, i, 100, false)
+        const resp = await getConvosByPage(userId, i, 100, false);
         allConvos = allConvos.concat(resp.conversations);
       }
     }
@@ -123,7 +122,7 @@ router.get('/', requireJwtAuth, async (req, res) => {
       const openAIMessages = convertToOpenAIFormat(longestPath, noGreetings);
       console.log(openAIMessages);
       if (openAIMessages.length > 0) {
-        allOpenAIMessages.push({messages: openAIMessages});
+        allOpenAIMessages.push({ messages: openAIMessages });
       }
 
     }
@@ -134,7 +133,7 @@ router.get('/', requireJwtAuth, async (req, res) => {
     console.log(e);
     res.status(500).json('Error counting stats');
   }
-})
+});
 
 // Add this line at the end of the file
 module.exports = router;

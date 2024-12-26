@@ -175,7 +175,7 @@ export const useStatsQuery = (
     refetchOnMount: false,
     ...config,
   });
-}
+};
 
 export const useExportDataQuery = (
   config?: UseQueryOptions<t.TExportDataResponse>,
@@ -186,7 +186,7 @@ export const useExportDataQuery = (
     refetchOnMount: false,
     ...config,
   });
-}
+};
 
 export const useConversationTagsQuery = (
   config?: UseQueryOptions<t.TConversationTagsResponse>,

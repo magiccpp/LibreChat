@@ -7,7 +7,6 @@ import { Spinner } from '~/components/svg';
 import { Upload } from 'lucide-react';
 import { saveAs } from 'file-saver';
 
-
 // Define the available formats using an object pattern for better type-safety
 const exportFormats = {
   OPENAI_JSONL: 'OpenAI jsonl',

@@ -50,7 +50,7 @@ export default function AddedConvo({
         aria-label="Open eye"
         onClick={() => setBlindMode(!isBlindMode)}
       >
-      {isBlindMode ? <EyeOff size={24}/> : <Eye size={24}/>}
+        {isBlindMode ? <EyeOff size={24}/> : <Eye size={24}/>}
       </button>
       <button
         className="text-token-text-secondary flex-shrink-0"

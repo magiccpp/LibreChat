@@ -7,18 +7,18 @@ const { getMessages } = require('~/models');
 
 function getKFactor(rating) {
   if (rating < 2100) {
-      return 40; // New or developing players
+    return 40; // New or developing players
   } else if (rating < 2400) {
-      return 20; // Established players
+    return 20; // Established players
   } else {
-      return 10; // Highly experienced players
+    return 10; // Highly experienced players
   }
 }
 
 function getActualScore(points_scored, points_opponent) {
-  const max_points = Math.max(points_scored, points_opponent)
-  const point_margin = max_points > 0 ? (points_scored - points_opponent) / max_points : 0
-  return 0.5 + 0.5 * point_margin
+  const max_points = Math.max(points_scored, points_opponent);
+  const point_margin = max_points > 0 ? (points_scored - points_opponent) / max_points : 0;
+  return 0.5 + 0.5 * point_margin;
 }
 
 function updateModelPoint(currentELORating, opponentELORating, matchPoint, opponentMatchPoint) {
@@ -39,7 +39,7 @@ function updateModelPoint(currentELORating, opponentELORating, matchPoint, oppon
   const actualScore = getActualScore(matchPoint, opponentMatchPoint);
   // Calculate new rating
   const newELORating = Math.round(
-    currentELORating + K * (actualScore - expectedScore)
+    currentELORating + K * (actualScore - expectedScore),
   );
 
   return newELORating;
@@ -49,11 +49,11 @@ router.get('/', requireJwtAuth, async (req, res) => {
   try {
     const userId = req.user.id;
     let allConvos = [];
-    const resp = await getConvosByPage(userId, 1, 100, false)
+    const resp = await getConvosByPage(userId, 1, 100, false);
     allConvos = allConvos.concat(resp.conversations);
     if (resp.pages > 1) {
       for (let i = 2; i <= resp.pages; i++) {
-        const resp = await getConvosByPage(userId, i, 100, false)
+        const resp = await getConvosByPage(userId, i, 100, false);
         allConvos = allConvos.concat(resp.conversations);
       }
     }
@@ -80,7 +80,7 @@ router.get('/', requireJwtAuth, async (req, res) => {
           modelStats[model] = {
             rating: initialPoints,
             matches: 0,
-            wins: 0
+            wins: 0,
           };
         }
 
@@ -116,13 +116,13 @@ router.get('/', requireJwtAuth, async (req, res) => {
     }
 
     let resultArray = Object.keys(modelStats)
-    .map(model => ({
-      model: model,
-      rating: modelStats[model].rating,
-      matches: modelStats[model].matches,
-      wins: modelStats[model].wins
-    }))
-    .filter(model => model.matches > 0);
+      .map(model => ({
+        model: model,
+        rating: modelStats[model].rating,
+        matches: modelStats[model].matches,
+        wins: modelStats[model].wins,
+      }))
+      .filter(model => model.matches > 0);
 
     return res.status(200).json(resultArray);
   } catch (e) {

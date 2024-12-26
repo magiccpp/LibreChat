@@ -16,7 +16,6 @@ import { cn, logger } from '~/utils';
 import store from '~/store';
 import { useAddedChatContext, useChatContext } from '~/Providers';
 
-
 type MessageRenderProps = {
   message?: TMessage;
   isCard?: boolean;
@@ -66,7 +65,6 @@ const MessageRender = memo(
       setCurrentEditId,
     });
 
-
     const {
       conversation: addedConvo,
     } = useAddedChatContext();
@@ -99,7 +97,7 @@ const MessageRender = memo(
         : undefined;
 
     // Determine if the text should be blurred
-    const shouldHideText  = messageLabel === msg?.sender && isBlindMode && addedConvo !== null;
+    const shouldHideText  = messageLabel === msg.sender && isBlindMode && addedConvo !== null;
     return (
       <div
         aria-label={`message-${msg.depth}-${msg.messageId}`}
@@ -127,11 +125,11 @@ const MessageRender = memo(
         <div className="relative flex flex-shrink-0 flex-col items-end">
           <div>
             <div className="pt-0.5">
-            {!shouldHideText && ( // Only render if shouldHideText is false
-            <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
-              <Icon message={msg} conversation={conversation} assistant={assistant} />
-            </div>
-          )}
+              {!shouldHideText && ( // Only render if shouldHideText is false
+                <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
+                  <Icon message={msg} conversation={conversation} assistant={assistant} />
+                </div>
+              )}
             </div>
           </div>
         </div>

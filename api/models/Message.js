@@ -182,7 +182,6 @@ async function updateMessageRating(req, { messageId, rating }) {
   }
 }
 
-
 /**
  * Updates a message.
  *
