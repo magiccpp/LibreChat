@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useStatsQuery } from '~/data-provider';
 import { useLocalize } from '~/hooks';
 import { Table, TableHeader, TableBody, TableRow, TableCell, Button } from '~/components/ui';
@@ -18,6 +18,11 @@ const StatisticsPanel = () => {
   const [sortField, setSortField] = useState<SortField>('rating');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
+  // Refetch data when the component mounts
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   // Handle sort click
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -29,6 +34,8 @@ const StatisticsPanel = () => {
       setSortDirection('desc');
     }
   };
+
+
 
   // Get sort icon for header
   const getSortIcon = (field: SortField) => {
