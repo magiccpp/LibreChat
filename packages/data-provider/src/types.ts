@@ -200,10 +200,15 @@ export type TStatsResponse = {
 type Message = {
   role: 'user' | 'assistant' | 'system';  // specify exact possible values
   content: string;
+  model?: string;
+}
+
+type conversation = {
+  messages: Message[]
 }
 
 // Define the export data response type
-export type TExportDataResponse = Message[][];
+export type TExportDataResponse = conversation[];
 
 // type for getting conversation tags
 export type TConversationTagsResponse = TConversationTag[];

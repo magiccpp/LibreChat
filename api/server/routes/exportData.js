@@ -90,6 +90,7 @@ function convertToOpenAIFormat(longestPath, noGreetings) {
       filteredPath.push({
         role: message.isCreatedByUser ? 'user' : 'assistant',
         content: message.text,
+        model: message.model || null,
       });
     }
   }
@@ -124,7 +125,6 @@ router.get('/', requireJwtAuth, async (req, res) => {
       if (openAIMessages.length > 0) {
         allOpenAIMessages.push({ messages: openAIMessages });
       }
-
     }
 
     res.status(200).json(allOpenAIMessages);
