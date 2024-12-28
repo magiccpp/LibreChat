@@ -192,7 +192,9 @@ export type TDeleteSharedLinkResponse = TSharedLink;
 export type TStatsResponse = {
   _id: string;
   model: string;
-  answers: number;
+  matches: number;
+  wins: number;
+  losses: number;
   rating: number;
 }[]
 

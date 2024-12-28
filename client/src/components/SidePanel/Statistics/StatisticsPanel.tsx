@@ -5,7 +5,7 @@ import { Table, TableHeader, TableBody, TableRow, TableCell, Button } from '~/co
 import { RefreshCcw, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 
 // Define possible sort fields
-type SortField = 'model' | 'matches' | 'rating' | 'wins';
+type SortField = 'model' | 'matches' | 'rating' | 'wins' | 'losses';
 
 // Define sort direction
 type SortDirection = 'asc' | 'desc';
@@ -44,7 +44,6 @@ const StatisticsPanel = () => {
   // Sort the data whenever rawData, sortField, or sortDirection changes
   const sortedData = useMemo(() => {
     if (!rawData) {return [];}
-
     return [...rawData].sort((a, b) => {
       let compareResult = 0;
 
@@ -104,6 +103,15 @@ const StatisticsPanel = () => {
             </TableCell>
             <TableCell
               className="w-full bg-header-primary px-3 py-3.5 sm:pl-6 cursor-pointer hover:bg-header-secondary"
+              onClick={() => handleSort('losses')}
+            >
+              <div className="flex items-center gap-2">
+                {localize('com_ui_number_losses')}
+                {getSortIcon('losses')}
+              </div>
+            </TableCell>
+            <TableCell
+              className="w-full bg-header-primary px-3 py-3.5 sm:pl-6 cursor-pointer hover:bg-header-secondary"
               onClick={() => handleSort('rating')}
             >
               <div className="flex items-center gap-2">
@@ -124,6 +132,9 @@ const StatisticsPanel = () => {
               </TableCell>
               <TableCell className="w-full px-3 py-3.5 sm:pl-6">
                 <div>{row.wins}</div>
+              </TableCell>
+              <TableCell className="w-full px-3 py-3.5 sm:pl-6">
+                <div>{row.losses}</div>
               </TableCell>
               <TableCell className="w-full px-3 py-3.5 sm:pl-6">
                 <div>{row.rating}</div>

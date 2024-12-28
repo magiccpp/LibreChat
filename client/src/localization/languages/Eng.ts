@@ -432,6 +432,7 @@ export default {
   com_ui_model_name: 'Model',
   com_ui_number_matches: 'Matches',
   com_ui_number_wins: 'Wins',
+  com_ui_number_losses: 'Losses',
   com_ui_rating: 'Rating',
   com_ui_refreshing: 'Refreshing...',
   com_ui_refresh: 'Refresh',

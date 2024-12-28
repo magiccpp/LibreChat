@@ -81,6 +81,7 @@ router.get('/', requireJwtAuth, async (req, res) => {
             rating: initialPoints,
             matches: 0,
             wins: 0,
+            losses: 0,
           };
         }
 
@@ -109,8 +110,10 @@ router.get('/', requireJwtAuth, async (req, res) => {
 
         if (matchPoint1 > matchPoint2) {
           modelStats[model1].wins++;
+          modelStats[model2].losses++;
         } else if (matchPoint2 > matchPoint1) {
           modelStats[model2].wins++;
+          modelStats[model1].losses++;
         }
       }
     }
@@ -121,6 +124,7 @@ router.get('/', requireJwtAuth, async (req, res) => {
         rating: modelStats[model].rating,
         matches: modelStats[model].matches,
         wins: modelStats[model].wins,
+        losses: modelStats[model].losses,
       }))
       .filter(model => model.matches > 0);
 
