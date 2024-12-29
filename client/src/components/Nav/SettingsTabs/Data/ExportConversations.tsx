@@ -10,16 +10,10 @@ function ExportConversations() {
   const localize = useLocalize();
   const [showModal, setShowModal] = useState(false);
   const [allowExport, setAllowExport] = useState(true);
-  const { refetch } = useExportDataQuery();
 
   const handleExportClick = async () => {
     setAllowExport(false);
     try {
-      const result = await refetch();
-      if (!result.data) {
-        console.error('No export data available');
-        return;
-      }
       setShowModal(true);
     } catch (error) {
       console.error('Error fetching export data:', error);

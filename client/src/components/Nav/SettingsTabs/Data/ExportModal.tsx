@@ -8,6 +8,8 @@ import { FileQuestion } from 'lucide-react'
 import { TExportDataResponse } from 'librechat-data-provider/dist/types';
 import { ChangeEvent } from 'react';
 
+
+
 const EXPORT_FORMATS = {
   OPENAI_JSONL: 'OpenAI jsonl',
   SHAREGPT_JSON: 'ShareGPT json',
@@ -40,22 +42,32 @@ const ExportModal = ({ onClose }) => {
     fetchData();
   }, [refetch]);
 
-  const availableModels: string[] = useMemo(() => {
+  const availableModels: { model: string; count: number }[] = useMemo(() => {
     if (!exportData) return [];
-    const modelSet = new Set<string>();
-    console.log('exportData:', exportData);
-    exportData.forEach(conversation => {
-      if (Array.isArray(conversation.messages)) { // Add this check
-        conversation.messages.forEach(message => {
+  
+    const modelCounts: Record<string, number> = {};
+  
+    exportData.forEach((conversation) => {
+      if (Array.isArray(conversation.messages)) {
+        const modelsInConversation = new Set<string>();
+  
+        conversation.messages.forEach((message) => {
           if (message.model) {
-            modelSet.add(message.model);
+            modelsInConversation.add(message.model);
           }
+        });
+  
+        modelsInConversation.forEach((model) => {
+          modelCounts[model] = (modelCounts[model] || 0) + 1;
         });
       } else {
         console.warn('conversation.messages is not an array:', conversation);
       }
     });
-    return Array.from(modelSet).sort();
+  
+    return Object.entries(modelCounts)
+      .map(([model, count]) => ({ model, count }))
+      .sort((a, b) => b.count - a.count || a.model.localeCompare(b.model));
   }, [exportData]);
 
   // Explicitly type the event parameter
@@ -154,11 +166,15 @@ const ExportModal = ({ onClose }) => {
             value=""
           >
             <option value="">Add a model</option>
-            {availableModels.map((model) => (
-              <option key={model} value={model}>
-                {model}
-              </option>
-            ))}
+            {availableModels.map(({ model, count }) => (
+            <option
+              key={model}
+              value={model}
+              title={`${model} participated in ${count} conversations`}
+            >
+              {model} ({count})
+            </option>
+          ))}
           </select>
 
           {/* Selected Models Display */}
