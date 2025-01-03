@@ -201,7 +201,7 @@ const anthropicMaxOutputs = {
   'claude-3-haiku': 4096,
   'claude-3-sonnet': 4096,
   'claude-3-opus': 4096,
-  'claude-3.5-sonnet': 8192,
+  'claude-3.5-haiku': 8192,
   'claude-3-5-sonnet': 8192,
 };
 

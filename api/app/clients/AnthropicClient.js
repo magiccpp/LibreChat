@@ -127,7 +127,7 @@ class AnthropicClient extends BaseClient {
         this.options.endpointType ?? this.options.endpoint,
         this.options.endpointTokenConfig,
       ) ??
-      1500;
+      3000;
     this.maxPromptTokens =
       this.options.maxPromptTokens || this.maxContextTokens - this.maxResponseTokens;
 
