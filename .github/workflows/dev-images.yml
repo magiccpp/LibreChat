@@ -121,4 +121,3 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/librechat-dev-api-certifi:${{ github.sha }}
             ${{ secrets.DOCKERHUB_USERNAME }}/librechat-dev-api-certifi:latest
           platforms: linux/amd64,linux/arm64
-          target: certi
