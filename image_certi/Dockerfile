@@ -1,4 +1,4 @@
-FROM magiccpp1/librechat-dev-api:latest
+FROM magiccpp1/librechat-dev-api:latest AS certi
 
 RUN apk add ca-certificates
 # Update certificates
