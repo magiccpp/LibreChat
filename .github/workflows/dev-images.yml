@@ -113,7 +113,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./image_certi
-          file: Dockerfile
+          file: image_certi/Dockerfile
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/librechat-dev-api-certifi:${{ github.sha }}
