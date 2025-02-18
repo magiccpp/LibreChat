@@ -197,18 +197,19 @@ const ContentRender = memo(
                 setSiblingIdx={setSiblingIdx}
               />
               <HoverButtons
-                index={index}
-                isEditing={edit}
-                message={msg}
-                enterEdit={enterEdit}
-                isSubmitting={isSubmitting}
-                conversation={conversation ?? null}
-                regenerate={handleRegenerateMessage}
-                copyToClipboard={copyToClipboard}
-                handleContinue={handleContinue}
-                latestMessage={latestMessage}
-                isLast={isLast}
-              />
+                  index={index}
+                  isEditing={edit}
+                  message={msg}
+                  enterEdit={enterEdit}
+                  isSubmitting={isSubmitting}
+                  conversation={conversation ?? null}
+                  regenerate={handleRegenerateMessage}
+                  copyToClipboard={copyToClipboard}
+                  handleContinue={handleContinue}
+                  latestMessage={latestMessage}
+                  isLast={isLast} rating={0} onRating={function (message: TMessage, rating: number): void {
+                    throw new Error('Cannot rate message while it is being rendered');
+                  } }              />
             </SubRow>
           )}
         </div>

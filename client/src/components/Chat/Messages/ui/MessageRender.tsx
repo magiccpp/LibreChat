@@ -186,6 +186,7 @@ const MessageRender = memo(
             <div className="flex max-w-full flex-grow flex-col gap-0">
               <MessageContext.Provider
                 value={{
+                  isExpanded: false,
                   messageId: msg.messageId,
                   conversationId: conversation?.conversationId,
                 }}
