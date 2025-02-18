@@ -27,10 +27,9 @@ export default function HeaderOptions({
   );
   const localize = useLocalize();
 
-  const { showPopover, conversation, latestMessage, setShowPopover, setShowBingToneSetting, isBlindMode } =
+  const { showPopover, conversation, latestMessage, setShowPopover } =
     useChatContext();
 
-  console.log('HeaderOptions: isBlindMode', isBlindMode);
   const { setOption } = useSetIndexOptions();
   const { endpoint, conversationId } = conversation ?? {};
 
@@ -76,7 +75,6 @@ export default function HeaderOptions({
                   setOption={setOption}
                   showAbove={false}
                   popover={true}
-                  isBlindMode={isBlindMode}
                 />
               )}
               {!noSettings[endpoint] &&

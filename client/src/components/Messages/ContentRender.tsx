@@ -11,6 +11,7 @@ import SubRow from '~/components/Chat/Messages/SubRow';
 import { useMessageActions } from '~/hooks';
 import { cn, logger } from '~/utils';
 import store from '~/store';
+import { useAddedChatContext, useChatContext } from '~/Providers';
 
 type ContentRenderProps = {
   message?: TMessage;
@@ -56,6 +57,11 @@ const ContentRender = memo(
       setCurrentEditId,
     });
 
+    const {
+      conversation: addedConvo,
+    } = useAddedChatContext();
+
+    const { isBlindMode } = useChatContext();
     const maximizeChatSpace = useRecoilValue(store.maximizeChatSpace);
     const fontSize = useRecoilValue(store.fontSize);
     const handleRegenerateMessage = useCallback(() => regenerateMessage(), [regenerateMessage]);
@@ -102,6 +108,8 @@ const ContentRender = memo(
         }
         : undefined;
 
+    const shouldHideText  = messageLabel === msg.sender && isBlindMode && addedConvo !== null;
+
     const baseClasses =
       'final-completion group mx-auto flex flex-1 gap-3 transition-all duration-300 transform-gpu';
 
@@ -145,9 +153,11 @@ const ContentRender = memo(
         <div className="relative flex flex-shrink-0 flex-col items-end">
           <div>
             <div className="pt-0.5">
-              <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
-                <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
-              </div>
+              {!shouldHideText && (
+                <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
+                  <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
+                </div>)
+              }
             </div>
           </div>
         </div>
@@ -157,7 +167,9 @@ const ContentRender = memo(
             msg.isCreatedByUser === true ? '' : 'agent-turn',
           )}
         >
-          <h2 className={cn('select-none font-semibold', fontSize)}>{messageLabel}</h2>
+          {!shouldHideText && (
+            <h2 className={cn('select-none font-semibold', fontSize)}>{messageLabel}</h2>
+          )}
           <div className="flex-col gap-1 md:gap-3">
             <div className="flex max-w-full flex-grow flex-col gap-0">
               <ContentParts
